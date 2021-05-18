@@ -1,0 +1,33 @@
+# declare constants
+SHELL=/bin/bash
+CONDAROOT=/opt/miniconda3/condabin/conda
+docker-image = image-name
+docker-container = container-name
+dependencies = environment.yml
+
+# external access port
+port = 3333 
+
+# rebuild application image and run it
+default: build run logs
+
+# build application docker image
+build: clean Dockerfile ${dependencies}
+    docker image build -t ${docker-image} .
+
+# start application, exposing port for flask webservice
+run:
+    docker run --env-file ./.env --name ${docker-container} -d -p ${port}:3000 ${docker-image}
+
+clean:
+    -docker stop ${docker-container}
+    -docker rm ${docker-container}
+    docker system prune -f 
+
+# view logs of the container, even if it is stopped
+logs:
+    docker logs -f ${docker-container} 
+
+# run in shell (requires conda environment)
+local: clean
+    export FLASK_APP=webservice/app && flask run --host=0.0.0.0 --port=${port}
