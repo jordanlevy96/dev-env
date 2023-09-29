@@ -41,6 +41,12 @@ alias turn_off_ph="defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool 
 export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
 
+# capture the output of a command so it can be retrieved with ret
+cap () { tee /tmp/capture.out; }
+
+# return the output of the most recent command that was captured by cap
+ret () { cat /tmp/capture.out; }
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/jordan/.sdkman"
 [[ -s "/Users/jordan/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/jordan/.sdkman/bin/sdkman-init.sh"
